@@ -1,24 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Header from "./components/Header";
+import "./App.css";
+import Homepage from "./pages/Homepage";
+import Coinpage from "./pages/Coinpage";
+import { makeStyles } from "@material-ui/core";
+import { useEffect, useState } from "react";
+
+const useStyles = makeStyles({
+  App: {
+    backgroundColor: "#14161a",
+    color: "white",
+    minHeight: "100vh",
+  },
+});
 
 function App() {
+  const [currency, setCurrency] = useState("INR");
+  const [symbol, setSymbol] = useState("");
+
+  useEffect(() => {
+    if (currency === "INR") setSymbol("Rs.");
+    else if (currency === "USD") setSymbol("$");
+    // else setSymbol("$");
+  }, [currency]);
+
+  const classes = useStyles();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <div className={classes.App}>
+        <Header currency={currency} symbol={symbol} setCurrency={setCurrency} />
+        <Routes>
+          <Route
+            path="/"
+            exact
+            element={<Homepage currency={currency} symbol={symbol} />}
+          />
+          <Route
+            path="/coins/:id"
+            element={<Coinpage currency={currency} symbol={symbol} />}
+          />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
